@@ -1,13 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:homestay_raya1/views/loginscreen.dart';
-import 'package:homestay_raya1/views/newhomestay.dart';
 import 'package:homestay_raya1/views/profilescreen.dart';
 import 'package:homestay_raya1/views/registrationscreen.dart';
-import 'package:geocoding/geocoding.dart';
-import 'package:homestay_raya1/views/sellerscreen.dart';
-
+import 'package:homestay_raya1/views/updatescree.dart';
 import '../models/user.dart';
 
 class MainScreen extends StatefulWidget {
@@ -19,190 +13,131 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  var _lat, lng;
-  late Position _position;
-  var placemarks;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+            body: Center(
+        child:
+            Column(mainAxisAlignment: MainAxisAlignment.start, children: [
+               const Text(
+            "",
+            style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold,fontStyle: FontStyle.italic,color: Color.fromARGB(255, 227, 89, 4)),
+          ),
+          Image.asset('assets/images/home1.png', scale: 0.2,color:const Color.fromARGB(255, 0, 0, 0),),
+        ]),
+      ),
         appBar: AppBar(
-          title: const Text("Buyer",
-              style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  fontStyle: FontStyle.italic)),
-          actions: [
-            IconButton(
-                onPressed: _registration,
-                icon: const Icon(Icons.app_registration)),
-            IconButton(onPressed: _loginForm, icon: const Icon(Icons.login)),
-            IconButton(onPressed: _newHome, icon: const Icon(Icons.settings)),
-          ],
-        ),
-        body: const Center(
-          child: Text("Buyer"),
+          title: const Text('Home',style: TextStyle(fontStyle: FontStyle.normal,fontWeight: FontWeight.bold)),
         ),
         drawer: Drawer(
           child: ListView(
             children: [
               UserAccountsDrawerHeader(
-                accountEmail: const Text(
-                    'test@gmail.com'), // keep blank text because email is required
+                decoration: const BoxDecoration(
+                    color: Color.fromARGB(255, 255, 149, 0)),
+                accountEmail: Text(widget.user.email.toString(),
+                    style: const TextStyle(
+                        color: Color.fromARGB(255, 0, 0,
+                            0))), // keep blank text because email is required
                 accountName: Row(
                   children: <Widget>[
                     Container(
                       width: 50,
-                      height: 50,
+                      height: 150,
                       decoration: const BoxDecoration(shape: BoxShape.circle),
                       child: const CircleAvatar(
-                        backgroundColor: Colors.redAccent,
+                        backgroundColor: Color.fromARGB(255, 240, 236, 92),
                         child: Icon(
                           Icons.check,
                         ),
                       ),
                     ),
+                        
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: const <Widget>[
-                        Text('user'),
-                        Text('@User'),
+                      children: <Widget>[
+                        Text(
+                          widget.user.name.toString(),
+                          style: const TextStyle(
+                              color: Color.fromARGB(255, 0, 0, 0)),
+                        ),
+                        
+                        Text(
+                          widget.user.phone.toString(),
+                          style: const TextStyle(
+                              color: Color.fromARGB(255, 0, 0, 0)),
+                        ),
                       ],
                     ),
                   ],
                 ),
               ),
               ListTile(
-                title: const Text("Buyer"),
+                 title: const Text('Home',style: TextStyle(fontStyle: FontStyle.normal,fontWeight: FontWeight.bold)),
                 onTap: () {
                   Navigator.pop(context);
                   Navigator.push(
                       context,
                       MaterialPageRoute(
+                          // ignore: prefer_const_constructors
                           builder: (content) => MainScreen(
-                                user: User(
-                                    id: "id",
-                                    name: "name",
-                                    email: "email",
-                                    phone: "phone",
-                                    address: "address",
-                                    regdate: "regdate",
-                                    otp: "otp",
-                                    credit: ''),
-                              )));
+                              user: User(
+                                  id: "id",
+                                  name: "name",
+                                  email: "email",
+                                  phone: "phone",
+                                  address: "address",
+                                  regdate: "regdate"))));
                 },
               ),
               ListTile(
-                title: const Text("Seller"),
+                 title: const Text('Create new account',style: TextStyle(fontStyle: FontStyle.normal,fontWeight: FontWeight.bold)),
                 onTap: () {
                   Navigator.pop(context);
-                  var user;
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (content) => SellerScreen(
+                          builder: (content) => RegistrationScreen(
                                 user: widget.user,
                               )));
                 },
               ),
               ListTile(
-                title: const Text("Profile"),
+                title: const Text('Homestay List',style: TextStyle(fontStyle: FontStyle.normal,fontWeight: FontWeight.bold)),
                 onTap: () {
                   Navigator.pop(context);
                   Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (content) => ProfileScreen(
-                                user: widget.user,
-                              )));
+                              user: User(
+                                  id: "id",
+                                  name: "name",
+                                  email: "email",
+                                  phone: "phone",
+                                  address: "address",
+                                  regdate: "regdate"))));
+                },
+              ),
+              ListTile(
+                title: const Text('Update profile',style: TextStyle(fontStyle: FontStyle.normal,fontWeight: FontWeight.bold)),
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (content) => UpdateScreen(
+                              user: User(
+                                  id: "id",
+                                  name: "name",
+                                  email: "email",
+                                  phone: "phone",
+                                  address: "address",
+                                  regdate: "regdate"))));
                 },
               ),
             ],
           ),
         ));
   }
-
-  ListView newMethod() => ListView();
-
-  void _registration() {
-    Navigator.push(context,
-        MaterialPageRoute(builder: ((context) => const RegistrationScreen())));
-  }
-
-  void _loginForm() {
-    Navigator.push(
-        context, MaterialPageRoute(builder: ((context) => const LoginPage())));
-  }
-
-  Future<void> _newHome() async {
-    if (await _checkPermissionGetLoc()) {
-      await Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (content) => NewHomeScreen(
-                  position: _position,
-                  user: widget.user,
-                  placemarks: placemarks)));
-      _loadProducts();
-    } else {
-      Fluttertoast.showToast(
-          msg: "Please allow the app to access the location",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 1,
-          fontSize: 14.0);
-    }
-  }
-
-//check permission,get location,get address return false if any problem.
-  Future<bool> _checkPermissionGetLoc() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      return Future.error('Location services are disabled.');
-    }
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        Fluttertoast.showToast(
-            msg: "Please allow the app to access the location",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.BOTTOM,
-            timeInSecForIosWeb: 1,
-            fontSize: 14.0);
-        Geolocator.openLocationSettings();
-        return false;
-      }
-    }
-    if (permission == LocationPermission.deniedForever) {
-      Fluttertoast.showToast(
-          msg: "Please allow the app to access the location",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 1,
-          fontSize: 14.0);
-      Geolocator.openLocationSettings();
-      return false;
-    }
-    _position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.best);
-    try {
-      placemarks = await placemarkFromCoordinates(
-          _position.latitude, _position.longitude);
-    } catch (e) {
-      Fluttertoast.showToast(
-          msg:
-              "Error in fixing your location. Make sure internet connection is available and try again.",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 1,
-          fontSize: 14.0);
-      return false;
-    }
-    return true;
-  }
-
-  void _loadProducts() {}
 }

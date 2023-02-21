@@ -1,20 +1,21 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 import 'dart:io';
+
+import 'package:homestay_raya1/config.dart';
+import 'package:homestay_raya1/models/product.dart';
+import 'package:homestay_raya1/models/user.dart';
+import 'package:http/http.dart' as http;
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:http/http.dart' as http;
-import '../config.dart';
-import '../models/user.dart';
 
 class DetailsScreen extends StatefulWidget {
-  final product;
+  final Product product;
   final User user;
   const DetailsScreen({
     Key? key,
     required this.product,
     required this.user,
-    required seller,
   }) : super(key: key);
 
   @override
@@ -30,8 +31,8 @@ class _DetailsScreenState extends State<DetailsScreen> {
       TextEditingController();
   final TextEditingController _prpriceEditingController =
       TextEditingController();
-  final TextEditingController _prdelEditingController = TextEditingController();
-  final TextEditingController _prqtyEditingController = TextEditingController();
+
+  final TextEditingController _guestEditingController = TextEditingController();
   final TextEditingController _prstateEditingController =
       TextEditingController();
   final TextEditingController _prlocalEditingController =
@@ -47,8 +48,6 @@ class _DetailsScreenState extends State<DetailsScreen> {
     _prnameEditingController.text = widget.product.productName.toString();
     _prdescEditingController.text = widget.product.productDesc.toString();
     _prpriceEditingController.text = widget.product.productPrice.toString();
-    _prdelEditingController.text = widget.product.productDelivery.toString();
-    _prqtyEditingController.text = widget.product.productQty.toString();
     _prstateEditingController.text = widget.product.productState.toString();
     _prlocalEditingController.text = widget.product.productLocal.toString();
   }
@@ -63,7 +62,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
       resWidth = screenWidth * 0.75;
     }
     return Scaffold(
-        appBar: AppBar(title: const Text("Details/Edit")),
+        appBar: AppBar(title: const Text("Edit Details")),
         body: SingleChildScrollView(
           child: Column(children: [
             Card(
@@ -75,7 +74,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                     width: resWidth,
                     fit: BoxFit.cover,
                     imageUrl:
-                        "${Config.SERVER}.SERVER}/assets/productimages/${widget.product.productId}.png",
+                        "${Config.SERVER}homeStayRaya/asset/productimage/${widget.product.productId}.png",
                     placeholder: (context, url) =>
                         const LinearProgressIndicator(),
                     errorWidget: (context, url, error) =>
@@ -90,7 +89,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                   const Padding(
                     padding: EdgeInsets.all(8.0),
                     child: Text(
-                      "Product/service details",
+                      "House",
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.w600,
@@ -152,13 +151,13 @@ class _DetailsScreenState extends State<DetailsScreen> {
                         flex: 5,
                         child: TextFormField(
                             textInputAction: TextInputAction.next,
-                            controller: _prqtyEditingController,
+                            controller: _guestEditingController,
                             validator: (val) => val!.isEmpty
-                                ? "Quantity should be more than 0"
+                                ? "Guest should be more than 0"
                                 : null,
                             keyboardType: TextInputType.number,
                             decoration: const InputDecoration(
-                                labelText: 'Product Quantity',
+                                labelText: 'Guest',
                                 labelStyle: TextStyle(),
                                 icon: Icon(Icons.ad_units),
                                 focusedBorder: OutlineInputBorder(
@@ -207,35 +206,6 @@ class _DetailsScreenState extends State<DetailsScreen> {
                       )
                     ],
                   ),
-                  Row(children: [
-                    Flexible(
-                      flex: 5,
-                      child: TextFormField(
-                          textInputAction: TextInputAction.next,
-                          controller: _prdelEditingController,
-                          validator: (val) =>
-                              val!.isEmpty ? "Must be more than zero" : null,
-                          keyboardType: TextInputType.number,
-                          decoration: const InputDecoration(
-                              labelText: 'Delivery charge/km',
-                              labelStyle: TextStyle(),
-                              icon: Icon(Icons.delivery_dining),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(width: 2.0),
-                              ))),
-                    ),
-                    Flexible(
-                        flex: 5,
-                        child: CheckboxListTile(
-                          title: const Text("Lawfull Item?"), //    <-- label
-                          value: _isChecked,
-                          onChanged: (bool? value) {
-                            setState(() {
-                              _isChecked = value!;
-                            });
-                          },
-                        )),
-                  ]),
                   SizedBox(
                     width: 200,
                     child: ElevatedButton(
@@ -260,15 +230,15 @@ class _DetailsScreenState extends State<DetailsScreen> {
           fontSize: 14.0);
       return;
     }
-    if (!_isChecked) {
-      Fluttertoast.showToast(
-          msg: "Please check agree checkbox",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 1,
-          fontSize: 14.0);
-      return;
-    }
+    // if (!_isChecked) {
+    //   Fluttertoast.showToast(
+    //       msg: "Please check agree checkbox",
+    //       toastLength: Toast.LENGTH_SHORT,
+    //       gravity: ToastGravity.BOTTOM,
+    //       timeInSecForIosWeb: 1,
+    //       fontSize: 14.0);
+    //   return;
+    // }
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -310,18 +280,16 @@ class _DetailsScreenState extends State<DetailsScreen> {
     String prname = _prnameEditingController.text;
     String prdesc = _prdescEditingController.text;
     String prprice = _prpriceEditingController.text;
-    String delivery = _prdelEditingController.text;
-    String qty = _prqtyEditingController.text;
+    String guest = _guestEditingController.text;
 
-    http.post(Uri.parse("${Config.SERVER}.SERVER}/php/update_product.php"),
+    http.post(Uri.parse("${Config.SERVER}homeStayRaya/php/update_product.php"),
         body: {
           "productid": widget.product.productId,
           "userid": widget.user.id,
           "prname": prname,
           "prdesc": prdesc,
           "prprice": prprice,
-          "delivery": delivery,
-          "qty": qty,
+          "guest": guest,
         }).then((response) {
       var data = jsonDecode(response.body);
       if (response.statusCode == 200 && data['status'] == "success") {
@@ -344,13 +312,4 @@ class _DetailsScreenState extends State<DetailsScreen> {
       }
     });
   }
-
-  CachedNetworkImage(
-      {required double width,
-      required BoxFit fit,
-      required String imageUrl,
-      required LinearProgressIndicator Function(dynamic context, dynamic url)
-          placeholder,
-      required Icon Function(dynamic context, dynamic url, dynamic error)
-          errorWidget}) {}
 }

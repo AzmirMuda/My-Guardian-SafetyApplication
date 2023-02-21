@@ -10,7 +10,8 @@ import '../config.dart';
 import '../models/user.dart';
 
 class RegistrationScreen extends StatefulWidget {
-  const RegistrationScreen({Key? key}) : super(key: key);
+  final User user;
+  const RegistrationScreen({Key? key, required this.user}) : super(key: key);
 
   @override
   State<RegistrationScreen> createState() => _RegisterPageState();
@@ -55,7 +56,10 @@ class _RegisterPageState extends State<RegistrationScreen> {
           right: screenWidth / 3.4,
           child: const Text(
             "Registration Form",
-            style: TextStyle(fontSize: 30, color: Colors.orange),
+            style: TextStyle(
+                fontSize: 30,
+                color: Colors.orange,
+                fontWeight: FontWeight.bold),
             textAlign: TextAlign.center,
           ),
         ),
@@ -247,8 +251,9 @@ class _RegisterPageState extends State<RegistrationScreen> {
                     Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                            builder: (BuildContext context) =>
-                                const LoginPage()))
+                            builder: (BuildContext context) => LoginPage(
+                                  user: widget.user,
+                                )))
                   },
                   child: const Text(
                     "Login here",
@@ -270,16 +275,14 @@ class _RegisterPageState extends State<RegistrationScreen> {
                     context,
                     MaterialPageRoute(
                         builder: (BuildContext context) => MainScreen(
-                              user: User(
-                                  id: "id",
-                                  name: "name",
-                                  email: "email",
-                                  phone: "phone",
-                                  address: "address",
-                                  regdate: "regdate",
-                                  otp: "otp",
-                                  credit: ''),
-                            )))
+                                user: User(
+                              id: "id",
+                              name: "name",
+                              email: "email",
+                              phone: "phone",
+                              address: "address",
+                              regdate: "regdate",
+                            ))))
               },
               child: Container(
                 padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),

@@ -17,16 +17,14 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  @override
-
-  User user = User (id: "id", name: "name", email: "email", phone: "phone" , address: "address", regdate: "regdate", otp: "otp", credit: '');
+  User user = User (id: "id", name: "name", email: "email", phone: "phone" , address: "address", regdate: "regdate");
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.orange,
       ),
-      home: MainScreen(user:user,),
+      home: SplashScreen(user:user,),
     );
   }
 }

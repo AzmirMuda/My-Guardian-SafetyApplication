@@ -18,7 +18,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     Timer(
-        const Duration(seconds: 5),
+        const Duration(seconds: 6),
         () => Navigator.push(
             context,
             MaterialPageRoute(
@@ -29,9 +29,7 @@ class _SplashScreenState extends State<SplashScreen> {
                           email: "email",
                           phone: "phone",
                           address: "address",
-                          regdate: "regdate",
-                          otp: "otp",
-                          credit: ''),
+                          regdate: "regdate"),
                     ))));
   }
 
@@ -39,17 +37,16 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: const [
-            Text(
-              "My Hometown Raya",
-              style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
-            ),
-            CircularProgressIndicator(),
-            Text("version 0.1b"),
-          ],
-        ),
+        child:
+            Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+               const Text(
+            "",
+            style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold,fontStyle: FontStyle.italic,color: Color.fromARGB(255, 227, 89, 4)),
+          ),
+          Image.asset('assets/images/home1.png', scale: 0.2,color:const Color.fromARGB(255, 254, 154, 3),),
+          const CircularProgressIndicator(),
+          const Text("version 0.1b"),
+        ]),
       ),
     );
   }

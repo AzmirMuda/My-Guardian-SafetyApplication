@@ -1,21 +1,28 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:homestay_raya1/models/user.dart';
-import 'package:homestay_raya1/views/mainscreen.dart';
+import 'package:homestay_raya1/views/profilescreen.dart';
 import 'package:homestay_raya1/views/registrationscreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import '../config.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
+  final User user;
+  const LoginPage({super.key, required this.user});
+  
+  // const MainScreen({super.key, required this.user});
 
   @override
   State<LoginPage> createState() => _LoginPageState();
+  
 }
 
 class _LoginPageState extends State<LoginPage> {
+  late Position _position;
+  var placemarks;
   late double screenHeight, screenWidth, resWidth;
   final focus = FocusNode();
   final focus1 = FocusNode();
@@ -181,7 +188,7 @@ class _LoginPageState extends State<LoginPage> {
                         context,
                         MaterialPageRoute(
                             builder: (BuildContext context) =>
-                                RegistrationScreen()))
+                                RegistrationScreen(user: widget.user,)))
                   },
                   child: const Text(
                     " Click here",
@@ -233,9 +240,8 @@ class _LoginPageState extends State<LoginPage> {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (BuildContext context) => MainScreen(
-                      user: user,
-                    )));
+                builder: (BuildContext context) => ProfileScreen(user: widget.user,)));
+
       } else {
         Fluttertoast.showToast(
             msg: "Login Failed",

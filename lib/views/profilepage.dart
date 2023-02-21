@@ -1,24 +1,26 @@
-import 'dart:async';
 import 'dart:convert';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:homestay_raya1/config.dart';
+import 'package:homestay_raya1/models/product.dart';
+import 'package:homestay_raya1/models/user.dart';
+import 'package:homestay_raya1/views/profilescreen.dart';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:homestay_raya1/views/detailsproduct.dart';
-import '../../models/user.dart';
-import 'package:http/http.dart' as http;
-import '../config.dart';
-import 'buyerproductdetails.dart';
 
-class BuyerScreen extends StatefulWidget {
+
+class ProfilePage extends StatefulWidget {
   final User user;
-  const BuyerScreen({super.key, required this.user});
+  const ProfilePage({super.key, required this.user});
 
   @override
-  State<BuyerScreen> createState() => _BuyerScreenState();
+  State<ProfilePage> createState() => _ProfilePage();
 }
 
-class _BuyerScreenState extends State<BuyerScreen> {
+class _ProfilePage extends State<ProfilePage> {
+  List<Product> productList = <Product>[];
   String titlecenter = "Loading...";
- // final df = DateFormat('dd/MM/yyyy hh:mm a');
+
   late double screenHeight, screenWidth, resWidth;
   int rowcount = 2;
   TextEditingController searchController = TextEditingController();
@@ -28,10 +30,6 @@ class _BuyerScreenState extends State<BuyerScreen> {
   var color;
   var numofpage, curpage = 1;
   int numberofresult = 0;
-
-  get df => null;
-
-  get productList => null;
 //for pagination
   @override
   void initState() {
@@ -57,7 +55,6 @@ class _BuyerScreenState extends State<BuyerScreen> {
       resWidth = screenWidth * 0.75;
       rowcount = 3;
     }
-    var productList;
     return WillPopScope(
         onWillPop: () async => false,
         child: Scaffold(
@@ -107,7 +104,7 @@ class _BuyerScreenState extends State<BuyerScreen> {
                                     width: resWidth / 2,
                                     fit: BoxFit.cover,
                                     imageUrl:
-                                        "${Config.SERVER}.SERVER}.SERVER}/assets/productimages/${productList[index].productId}.png",
+                                        "${Config.SERVER}homeStayRaya/asset/productimage/${productList[index].productId}.png",
                                     placeholder: (context, url) =>
                                         const LinearProgressIndicator(),
                                     errorWidget: (context, url, error) =>
@@ -132,10 +129,6 @@ class _BuyerScreenState extends State<BuyerScreen> {
                                           ),
                                           Text(
                                               "RM ${double.parse(productList[index].productPrice.toString()).toStringAsFixed(2)}"),
-                                          Text(df.format(DateTime.parse(
-                                              productList[index]
-                                                  .productDate
-                                                  .toString()))),
                                         ],
                                       ),
                                     ))
@@ -172,7 +165,7 @@ class _BuyerScreenState extends State<BuyerScreen> {
                     ),
                   ],
                 ),
-          drawer: MainMenuWidget(user: widget.user),
+          drawer: ProfileScreen(user: widget.user),
         ));
   }
 
@@ -192,9 +185,10 @@ class _BuyerScreenState extends State<BuyerScreen> {
     http
         .get(
       Uri.parse(
-          "${Config.SERVER}.SERVER}.SERVER}/php/loadallproducts.php?search=$search&pageno=$pageno"),
+          "${Config.SERVER}homeStayRaya/php/loadallproducts.php?search=$search&pageno=$pageno"),
     )
         .then((response) {
+      //  progressDialog.show();
       print(response.body);
       // wait for response from the request
       if (response.statusCode == 200) {
@@ -210,7 +204,7 @@ class _BuyerScreenState extends State<BuyerScreen> {
             numberofresult = int.parse(jsondata[
                 'numberofresult']); //get total number of result returned
             //check if  array object is not null
-            newMethod(); //complete the array object definition
+            productList = <Product>[]; //complete the array object definition
             extractdata['products'].forEach((v) {
               //traverse products array list and add to the list object array productList
               productList.add(Product.fromJson(
@@ -229,6 +223,7 @@ class _BuyerScreenState extends State<BuyerScreen> {
       }
 
       setState(() {}); //refresh UI
+      // progressDialog.hide();
     });
   }
 
@@ -242,23 +237,32 @@ class _BuyerScreenState extends State<BuyerScreen> {
           fontSize: 14.0);
       return;
     }
-    Product product = Product.fromJson(productList[index].toJson());
+  }
+  /*Product product = Product.fromJson(productList[index].toJson());
     loadSingleSeller(index);
     //todo update seller object with empty object.
-
-    Timer(const Duration(seconds: 1), () {
+    ProgressDialog progressDialog = ProgressDialog(
+      context,
+      blur: 5,
+      message: const Text("Loading..."),
+      title: null,
+    );
+    progressDialog.show();
+     {
       if (seller != null) {
+        progressDialog.hide();
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (content) => DetailsScreen(
+                builder: (content) => ProfileScreen(
                       user: widget.user,
-                      product: product,
-                      seller: seller,
+                      
                     )));
       }
+      progressDialog.hide()
     });
   }
+  */
 
   void _loadSearchDialog() {
     searchController.text = "";
@@ -305,7 +309,7 @@ class _BuyerScreenState extends State<BuyerScreen> {
   }
 
   loadSingleSeller(int index) {
-    http.post(Uri.parse("${Config.SERVER}.SERVER}.SERVER}/php/load_seller.php"),
+    http.post(Uri.parse("${Config.SERVER}homeStayRaya/php/load_seller.php"),
         body: {"sellerid": productList[index].userId}).then((response) {
       print(response.body);
       var jsonResponse = json.decode(response.body);
@@ -314,25 +318,4 @@ class _BuyerScreenState extends State<BuyerScreen> {
       }
     });
   }
-
-  CachedNetworkImage(
-      {required double width,
-      required BoxFit fit,
-      required String imageUrl,
-      required LinearProgressIndicator Function(dynamic context, dynamic url)
-          placeholder,
-      required Icon Function(dynamic context, dynamic url, dynamic error)
-          errorWidget}) {}
-
-  MainMenuWidget({required User user}) {}
-
-  void newMethod() {}
-}
-
-class Product {
-  get productName => null;
-
-  static fromJson(v) {}
-
-  toJson() {}
 }
