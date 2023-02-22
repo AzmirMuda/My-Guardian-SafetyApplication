@@ -7,26 +7,18 @@ if (!isset($_POST)){
 
 include_once("dbconnect.php");
 $userid = $_POST['userid'];
+$productid = $_POST['productid'];
 $prname = $_POST['prname'];
 $prdesc=$_POST['prdesc'];
 $prprice = $_POST['prprice'];
 $guest = $_POST['guest'];
-$state=$_POST['state'];
-$local = $_POST['local'];
-$lat = $_POST['lat'];
-$lon=$_POST['lon'];
-$image=$_POST['image'];
-$image1=$_POST['image1'];
 
-$sqlinsert="INSERT INTO `tbl_products`( `user_id`, `product_name`, `product_desc`, `product_price`, `product_qty`, `product_state`, `product_local`, `product_lat`, `product_lng` )VALUES('$userid','$prname','$prdesc','$prprice','$guest','$state','$local','$lat','$lon')";
+
+$sqlupdate = "UPDATE `tbl_products` SET `product_name`='$prname', `product_desc`='$prdesc', `product_price`='$prprice', `product_guest`='$guest' 
+WHERE `product_id` = '$productid' AND 'userid' = '$userid'";
 
 try{
-	if ($conn->query($sqlinsert) === TRUE) {
-		 $decoded_string = base64_decode($image);
-		 
-    $filename = mysqli_insert_id($conn);
-    $path = '../asset/productimage/'.$filename.'.png';
-     file_put_contents($path, $decoded_string);
+	if ($conn->query($sqlupdate) === TRUE) {
 	$response = array('status' => 'success', 'data' => null);
 		   sendJsonResponse($response);
 	}
