@@ -25,7 +25,7 @@ class _UpdateScreenState extends State<UpdateScreen> {
   late double screenHeight, screenWidth, resWidth;
   File? _image;
   var pathAsset = "assets/images/profile.png";
-  var val = 50;
+  var val = 25;
 
   bool isDisable = false;
   final TextEditingController _nameController = TextEditingController();
@@ -62,7 +62,11 @@ class _UpdateScreenState extends State<UpdateScreen> {
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
-          appBar: AppBar( title: const Text('Profile',style:TextStyle(fontStyle: FontStyle.normal,fontWeight :FontWeight.bold))),
+          appBar: AppBar(
+              title: const Text('Profile',
+                  style: TextStyle(
+                      fontStyle: FontStyle.normal,
+                      fontWeight: FontWeight.bold))),
           body: Column(children: [
             Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -70,7 +74,7 @@ class _UpdateScreenState extends State<UpdateScreen> {
                   height: screenHeight * 0.25,
                   child: Row(
                     children: [
-                      /* Flexible(
+                      Flexible(
                         flex: 4,
                         child: SizedBox(
                             height: screenHeight * 0.25,
@@ -83,7 +87,7 @@ class _UpdateScreenState extends State<UpdateScreen> {
                                   width: resWidth / 2,
                                   fit: BoxFit.cover,
                                   imageUrl:
-                                      "${Confiq.SERVER}/assets/profileimages/${widget.user.id}.png?v=$val",
+                                      "${Config.SERVER}/asset/productimage/${widget.user.id}.png?v=$val",
                                   placeholder: (context, url) =>
                                       const LinearProgressIndicator(),
                                   errorWidget: (context, url, error) =>
@@ -95,7 +99,6 @@ class _UpdateScreenState extends State<UpdateScreen> {
                               ),
                             )),
                       ),
-                      */
                       Flexible(
                           flex: 6,
                           child: Column(
@@ -142,17 +145,17 @@ class _UpdateScreenState extends State<UpdateScreen> {
                               Row(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  Spacer(),
-                                  Icon(Icons.phone),
-                                  Spacer(),
+                                  const Spacer(),
+                                  const Icon(Icons.phone),
+                                  const Spacer(),
                                   Expanded(
                                     child: Text(
                                       widget.user.phone.toString(),
                                       textAlign: TextAlign.left,
                                     ),
                                   ),
-                                  Spacer(),
-                                  Spacer(),
+                                  const Spacer(),
+                                  const Spacer(),
                                 ],
                               ),
                             ],
@@ -267,8 +270,12 @@ class _UpdateScreenState extends State<UpdateScreen> {
               ),
               onPressed: () {
                 Navigator.of(context).pop();
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (content) =>  RegistrationScreen(user: widget.user,)));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (content) => RegistrationScreen(
+                              user: widget.user,
+                            )));
               },
             ),
             TextButton(
@@ -307,8 +314,12 @@ class _UpdateScreenState extends State<UpdateScreen> {
               ),
               onPressed: () {
                 Navigator.of(context).pop();
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (content) =>   LoginPage(user: widget.user,)));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (content) => LoginPage(
+                              user: widget.user,
+                            )));
               },
             ),
             TextButton(
@@ -391,10 +402,11 @@ class _UpdateScreenState extends State<UpdateScreen> {
 
   void _updateProfileImage(image) {
     String base64Image = base64Encode(image!.readAsBytesSync());
-    http.post(Uri.parse("${Config.SERVER}homeStayRaya/php/update_profile.php"), body: {
-      "userid": widget.user.id,
-      "image": base64Image,
-    }).then((response) {
+    http.post(Uri.parse("${Config.SERVER}homeStayRaya/php/update_profile.php"),
+        body: {
+          "userid": widget.user.id,
+          "image": base64Image,
+        }).then((response) {
       var jsondata = jsonDecode(response.body);
       if (response.statusCode == 200 && jsondata['status'] == 'success') {
         Fluttertoast.showToast(
@@ -474,10 +486,11 @@ class _UpdateScreenState extends State<UpdateScreen> {
   }
 
   void _updateName(String newname) {
-    http.post(Uri.parse("${Config.SERVER}homeStayRaya/php/update_profile.php"), body: {
-      "userid": widget.user.id,
-      "newname": newname,
-    }).then((response) {
+    http.post(Uri.parse("${Config.SERVER}homeStayRaya/php/update_profile.php"),
+        body: {
+          "userid": widget.user.id,
+          "newname": newname,
+        }).then((response) {
       print(response.body);
       var jsondata = jsonDecode(response.body);
       if (response.statusCode == 200 && jsondata['status'] == 'success') {
@@ -559,10 +572,11 @@ class _UpdateScreenState extends State<UpdateScreen> {
   }
 
   void _updateEmail(String newemail) {
-    http.post(Uri.parse("${Config.SERVER}/php/update_profile.php"), body: {
-      "userid": widget.user.id,
-      "newemail": newemail,
-    }).then((response) {
+    http.post(Uri.parse("${Config.SERVER}homeStayRaya/php/update_profile.php"),
+        body: {
+          "userid": widget.user.id,
+          "newemail": newemail,
+        }).then((response) {
       print(response.body);
       var jsondata = jsonDecode(response.body);
       if (response.statusCode == 200 && jsondata['status'] == 'success') {
@@ -645,10 +659,11 @@ class _UpdateScreenState extends State<UpdateScreen> {
   }
 
   void _updatePhone(String newphone) {
-    http.post(Uri.parse("${Config.SERVER}homeStayRaya/php/update_profile.php"), body: {
-      "userid": widget.user.id,
-      "newphone": newphone,
-    }).then((response) {
+    http.post(Uri.parse("${Config.SERVER}homeStayRaya/php/update_profile.php"),
+        body: {
+          "userid": widget.user.id,
+          "newphone": newphone,
+        }).then((response) {
       print(response.body);
       var jsondata = jsonDecode(response.body);
       if (response.statusCode == 200 && jsondata['status'] == 'success') {
@@ -845,11 +860,12 @@ class _UpdateScreenState extends State<UpdateScreen> {
   }
 
   void changePass() {
-    http.post(Uri.parse("${Config.SERVER}homeStayRaya/php/update_profile.php"), body: {
-      "userid": widget.user.id,
-      "oldpass": _oldpasswordController.text,
-      "newpass": _newpasswordController.text,
-    }).then((response) {
+    http.post(Uri.parse("${Config.SERVER}homeStayRaya/php/update_profile.php"),
+        body: {
+          "userid": widget.user.id,
+          "oldpass": _oldpasswordController.text,
+          "newpass": _newpasswordController.text,
+        }).then((response) {
       print(response.body);
       var jsondata = jsonDecode(response.body);
       if (response.statusCode == 200 && jsondata['status'] == 'success') {

@@ -25,18 +25,14 @@ class DetailsScreen extends StatefulWidget {
 class _DetailsScreenState extends State<DetailsScreen> {
   var pathAsset = "assets/images/camera.png";
   bool _isChecked = false;
-  final TextEditingController _prnameEditingController =
-      TextEditingController();
-  final TextEditingController _prdescEditingController =
-      TextEditingController();
-  final TextEditingController _prpriceEditingController =
-      TextEditingController();
+
+  final TextEditingController _prnameEditingController =TextEditingController();
+  final TextEditingController _prdescEditingController =TextEditingController();
+  final TextEditingController _prpriceEditingController =TextEditingController();
 
   final TextEditingController _guestEditingController = TextEditingController();
-  final TextEditingController _prstateEditingController =
-      TextEditingController();
-  final TextEditingController _prlocalEditingController =
-      TextEditingController();
+  final TextEditingController _prstateEditingController =TextEditingController();
+  final TextEditingController _prlocalEditingController =TextEditingController();
   final _formKey = GlobalKey<FormState>();
   File? _image;
   late double screenHeight, screenWidth, resWidth;
@@ -48,6 +44,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
     _prnameEditingController.text = widget.product.productName.toString();
     _prdescEditingController.text = widget.product.productDesc.toString();
     _prpriceEditingController.text = widget.product.productPrice.toString();
+    _guestEditingController.text = widget.product.productPrice.toString();
     _prstateEditingController.text = widget.product.productState.toString();
     _prlocalEditingController.text = widget.product.productLocal.toString();
   }
@@ -206,6 +203,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                       )
                     ],
                   ),
+                  
                   SizedBox(
                     width: 200,
                     child: ElevatedButton(
@@ -277,19 +275,24 @@ class _DetailsScreenState extends State<DetailsScreen> {
   }
 
   void _updateProduct() {
-    String prname = _prnameEditingController.text;
-    String prdesc = _prdescEditingController.text;
-    String prprice = _prpriceEditingController.text;
-    String guest = _guestEditingController.text;
+    String _prname = _prnameEditingController.text;
+    String _prdesc = _prdescEditingController.text;
+    String _prprice = _prpriceEditingController.text;
+    String _guest = _guestEditingController.text;
+    String _state = _prstateEditingController.text;
+    String _prlocal = _prlocalEditingController.text;
 
     http.post(Uri.parse("${Config.SERVER}homeStayRaya/php/update_product.php"),
         body: {
           "productid": widget.product.productId,
-          "userid": widget.user.id,
-          "prname": prname,
-          "prdesc": prdesc,
-          "prprice": prprice,
-          "guest": guest,
+          //"productid":widget.user.id,
+          "prname": _prname,
+          "prdesc": _prdesc,
+          "prprice": _prprice,
+          "guest": _guest,
+          "state": _state,
+          "local": _prlocal,
+    
         }).then((response) {
       var data = jsonDecode(response.body);
       if (response.statusCode == 200 && data['status'] == "success") {

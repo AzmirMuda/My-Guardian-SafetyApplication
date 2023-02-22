@@ -429,7 +429,7 @@ class _NewProductScreenState extends State<NewProductScreen> {
             gravity: ToastGravity.BOTTOM,
             timeInSecForIosWeb: 1,
             fontSize: 14.0);
-        //Navigator.of(context).pop();
+        Navigator.of(context).pop();
         return;
       } else {
         Fluttertoast.showToast(

@@ -152,11 +152,11 @@ class _ProfileState extends State<ProfileScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: const <Widget>[
                         Text(
-                          'user',
+                          'azmirmuda',
                           style: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
                         ),
                         Text(
-                          '@User',
+                          'azmirmuda@gmail.com',
                           style: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
                         ),
                       ],
