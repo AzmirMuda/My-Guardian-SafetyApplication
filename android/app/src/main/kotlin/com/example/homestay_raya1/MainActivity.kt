@@ -1,4 +1,4 @@
-package com.example.homestay_raya1
+package com.example.SafetyApplication
 
 import io.flutter.embedding.android.FlutterActivity
 

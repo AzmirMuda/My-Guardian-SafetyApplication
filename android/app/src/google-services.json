@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "693896065828",
+    "project_id": "fypmyguardian",
+    "storage_bucket": "fypmyguardian.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:693896065828:android:911d28a7f2e1c8b601b9b1",
+        "android_client_info": {
+          "package_name": "com.example.SafetyApplication"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDldHxSdsd2TUSrBzKZ9l_Cb0oIKgYeNXY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

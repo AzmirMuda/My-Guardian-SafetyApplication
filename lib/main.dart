@@ -1,30 +1,37 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:homestay_raya1/views/mainscreen.dart';
 
 import 'models/user.dart';
 import 'views/splashscreen.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
-class MyApp extends StatefulWidget {
-  const MyApp({Key? key}) : super(key: key);
+class MyApp extends StatelessWidget {
+  const MyApp();
 
   @override
-  State<MyApp> createState() => _MyAppState();
-  
-}
-
-class _MyAppState extends State<MyApp> {
-  User user = User (id: "id", name: "name", email: "email", phone: "phone" , address: "address", regdate: "regdate");
   Widget build(BuildContext context) {
+    User user = User(
+      id: "id",
+      name: "name",
+      email: "email",
+      phone: "phone",
+      address: "address",
+      regdate: "regdate",
+    );
+
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'My Guardian : Safety Application',
       theme: ThemeData(
         primarySwatch: Colors.orange,
       ),
-      home: SplashScreen(user:user,),
+      home: SplashScreen(
+        user: user,
+      ),
     );
   }
 }

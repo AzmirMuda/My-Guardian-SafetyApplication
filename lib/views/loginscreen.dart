@@ -1,24 +1,24 @@
 import 'dart:convert';
+
+import 'package:SafetyApplication/views/emergency.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:homestay_raya1/models/user.dart';
-import 'package:homestay_raya1/views/profilescreen.dart';
-import 'package:homestay_raya1/views/registrationscreen.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+
 import '../config.dart';
+import '../models/user.dart';
+import 'registrationscreen.dart';
 
 class LoginPage extends StatefulWidget {
   final User user;
-  const LoginPage({super.key, required this.user});
-  
-  // const MainScreen({super.key, required this.user});
+  const LoginPage({Key? key, required this.user}) : super(key: key);
 
   @override
   State<LoginPage> createState() => _LoginPageState();
-  
 }
+
 
 class _LoginPageState extends State<LoginPage> {
   late Position _position;
@@ -72,140 +72,161 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget lowerHalf(BuildContext context) {
-    return Container(
-        width: resWidth,
-        margin: const EdgeInsets.only(top: 20),
-        padding: const EdgeInsets.only(left: 10, right: 10),
-        child: SingleChildScrollView(
-            child: Column(
-          children: [
-            Card(
-                elevation: 10,
-                child: Container(
-                    padding: const EdgeInsets.fromLTRB(25, 10, 20, 25),
-                    child: Form(
-                      key: _formKey,
-                      child: Column(
-                        children: [
-                          Text(
-                            "Login",
-                            style: TextStyle(
-                              fontSize: resWidth * 0.05,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          TextFormField(
-                              textInputAction: TextInputAction.next,
-                              validator: (val) => val!.isEmpty ||
-                                      !val.contains("@") ||
-                                      !val.contains(".")
-                                  ? "enter a valid email"
-                                  : null,
-                              focusNode: focus,
-                              onFieldSubmitted: (v) {
-                                FocusScope.of(context).requestFocus(focus1);
-                              },
-                              controller: _emailditingController,
-                              keyboardType: TextInputType.emailAddress,
-                              decoration: const InputDecoration(
-                                  labelStyle: TextStyle(),
-                                  labelText: 'Email',
-                                  icon: Icon(
-                                    Icons.phone,
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(width: 2.0),
-                                  ))),
-                          TextFormField(
-                            textInputAction: TextInputAction.done,
-                            validator: (val) =>
-                                val!.isEmpty ? "Enter a password" : null,
-                            focusNode: focus1,
-                            onFieldSubmitted: (v) {
-                              FocusScope.of(context).requestFocus(focus2);
-                            },
-                            controller: _passEditingController,
-                            decoration: const InputDecoration(
-                                labelStyle: TextStyle(),
-                                labelText: 'Password',
-                                icon: Icon(
-                                  Icons.lock,
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(width: 2.0),
-                                )),
-                            obscureText: true,
-                          ),
-                          const SizedBox(
-                            height: 15,
-                          ),
-                          Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(
-                                  children: [
-                                    Checkbox(
-                                      value: _isChecked,
-                                      onChanged: (bool? value) {
-                                        _onRememberMeChanged(value!);
-                                      },
-                                    ),
-                                    const Text('Remember me',
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                        )),
-                                  ],
-                                ),
-                                Flexible(
-                                  flex: 5,
-                                  child: ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                        fixedSize: Size(screenWidth / 3, 50)),
-                                    child: const Text('Login'),
-                                    onPressed: _loginUser,
-                                  ),
-                                ),
-                              ]),
-                        ],
+Widget lowerHalf(BuildContext context) {
+  return Container(
+    width: resWidth,
+    margin: const EdgeInsets.only(top: 20),
+    padding: const EdgeInsets.only(left: 10, right: 10),
+    child: SingleChildScrollView(
+      child: Column(
+        children: [
+          Card(
+            elevation: 10,
+            color: Colors.white, // Set the background color of the card
+            child: Container(
+              padding: const EdgeInsets.fromLTRB(25, 10, 20, 25),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    Text(
+                      "Login",
+                      style: TextStyle(
+                        fontSize: resWidth * 0.05,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.blue, // Set the text color
                       ),
-                    ))),
-            const SizedBox(
-              height: 10,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                const Text("Register new account? ",
-                    style: TextStyle(fontSize: 16.0)),
-                GestureDetector(
-                  onTap: () => {
-                    Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (BuildContext context) =>
-                                RegistrationScreen(user: widget.user,)))
-                  },
-                  child: const Text(
-                    " Click here",
-                    style: TextStyle(
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.bold,
                     ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    TextFormField(
+                      textInputAction: TextInputAction.next,
+                      validator: (val) => val!.isEmpty || !val.contains("@") || !val.contains(".")
+                          ? "Enter a valid email"
+                          : null,
+                      focusNode: focus,
+                      onFieldSubmitted: (v) {
+                        FocusScope.of(context).requestFocus(focus1);
+                      },
+                      controller: _emailditingController,
+                      keyboardType: TextInputType.emailAddress,
+                      decoration: const InputDecoration(
+                        labelStyle: TextStyle(),
+                        labelText: 'Email',
+                        icon: Icon(
+                          Icons.phone,
+                          color: Colors.blue, // Set the icon color
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(width: 2.0),
+                        ),
+                      ),
+                    ),
+                    TextFormField(
+                      textInputAction: TextInputAction.done,
+                      validator: (val) => val!.isEmpty ? "Enter a password" : null,
+                      focusNode: focus1,
+                      onFieldSubmitted: (v) {
+                        FocusScope.of(context).requestFocus(focus2);
+                      },
+                      controller: _passEditingController,
+                      decoration: const InputDecoration(
+                        labelStyle: TextStyle(),
+                        labelText: 'Password',
+                        icon: Icon(
+                          Icons.lock,
+                          color: Colors.blue, // Set the icon color
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(width: 2.0),
+                        ),
+                      ),
+                      obscureText: true,
+                    ),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Checkbox(
+                              value: _isChecked,
+                              onChanged: (bool? value) {
+                                _onRememberMeChanged(value!);
+                              },
+                            ),
+                            const Text(
+                              'Remember me',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.blue, // Set the text color
+                              ),
+                            ),
+                          ],
+                        ),
+                        Flexible(
+                          flex: 5,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              fixedSize: Size(screenWidth / 3, 50),
+                              primary: Colors.blue, // Set the button color
+                            ),
+                            child: const Text('Login'),
+                            onPressed: _loginUser,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              const Text(
+                "Register new account? ",
+                style: TextStyle(fontSize: 16.0, color: Colors.blue), // Set the text color
+              ),
+              GestureDetector(
+                onTap: () => {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => RegistrationScreen(
+                        user: widget.user,
+                      ),
+                    ),
+                  )
+                },
+                child: const Text(
+                  " Click here",
+                  style: TextStyle(
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blue, // Set the text color
                   ),
                 ),
-              ],
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-          ],
-        )));
-  }
+              ),
+            ],
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
 
   void _loginUser() {
     FocusScope.of(context).requestFocus(FocusNode());
@@ -223,7 +244,7 @@ class _LoginPageState extends State<LoginPage> {
 
     String _email = _emailditingController.text;
     String _pass = _passEditingController.text;
-    http.post(Uri.parse("${Config.SERVER}homeStayRaya/php/register_user.php"),
+    http.post(Uri.parse("${Config.SERVER}/php/register_user.php"),
         body: {"email": _email, "password": _pass}).then((response) {
       if (response.statusCode == 200 && response.body != "failed") {
         final jsonResponse = json.decode(response.body);
@@ -240,8 +261,9 @@ class _LoginPageState extends State<LoginPage> {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (BuildContext context) => ProfileScreen(user: widget.user,)));
-
+                builder: (BuildContext context) => EmergencyApp(
+                      user: widget.user,
+                    )));
       } else {
         Fluttertoast.showToast(
             msg: "Login Failed",

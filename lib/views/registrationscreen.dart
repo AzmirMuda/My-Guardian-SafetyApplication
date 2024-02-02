@@ -1,318 +1,327 @@
 import 'dart:convert';
-import 'package:homestay_raya1/views/loginscreen.dart';
-import 'package:homestay_raya1/views/mainscreen.dart';
-import 'package:homestay_raya1/views/splashscreen.dart';
-import 'package:http/http.dart' as http;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:http/http.dart' as http;
+
 import '../config.dart';
 import '../models/user.dart';
+import 'loginscreen.dart';
+import 'mainscreen.dart';
 
 class RegistrationScreen extends StatefulWidget {
   final User user;
+
   const RegistrationScreen({Key? key, required this.user}) : super(key: key);
 
   @override
-  State<RegistrationScreen> createState() => _RegisterPageState();
+  State<RegistrationScreen> createState() => _RegistrationScreenState();
 }
 
-class _RegisterPageState extends State<RegistrationScreen> {
-  bool _isChecked = false;
-  bool _passwordVisible = true;
-  String eula = "";
-
-  late double screenHeight, screenWidth;
-  final focus = FocusNode();
-  final focus1 = FocusNode();
-  final focus2 = FocusNode();
-  final focus3 = FocusNode();
+class _RegistrationScreenState extends State<RegistrationScreen> {
+  @override
+  void initState() {
+    super.initState();
+    loadEula();
+  }
 
   final TextEditingController _nameEditingController = TextEditingController();
-  final TextEditingController _emailditingController = TextEditingController();
+  final TextEditingController _emailEditingController = TextEditingController();
+  final TextEditingController _phoneEditingController = TextEditingController();
   final TextEditingController _passEditingController = TextEditingController();
   final TextEditingController _pass2EditingController = TextEditingController();
-  final _formKey = GlobalKey<FormState>();
 
-  get fluttertoast => null;
+  bool _isChecked = false;
+  bool _passwordVisible = true;
+  final _formKey = GlobalKey<FormState>();
+  String eula = "";
+
+  late double screenHeight, screenWidth, cardWidth;
 
   @override
   Widget build(BuildContext context) {
     screenHeight = MediaQuery.of(context).size.height;
     screenWidth = MediaQuery.of(context).size.width;
-
     return Scaffold(
-      body: Stack(
-        children: [upperHalf(context), lowerHalf(context)],
-      ),
-    );
-  }
-
-  Widget upperHalf(BuildContext context) {
-    return Stack(
-      children: [
-        Positioned(
-          top: screenHeight * 0.12,
-          right: screenWidth / 3.4,
-          child: const Text(
-            "Registration Form",
-            style: TextStyle(
-                fontSize: 30,
-                color: Colors.orange,
-                fontWeight: FontWeight.bold),
-            textAlign: TextAlign.center,
+      appBar: AppBar(
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.orange, Colors.blueAccent],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
           ),
         ),
-      ],
-    );
-  }
-
-  Widget lowerHalf(BuildContext context) {
-    return Container(
-      height: 600,
-      margin: EdgeInsets.only(top: screenHeight / 5),
-      padding: const EdgeInsets.only(left: 12, right: 12),
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            Card(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15)),
-              elevation: 10,
-              child: Container(
-                padding: const EdgeInsets.fromLTRB(25, 30, 25, 20),
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    children: <Widget>[
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      TextFormField(
-                          textInputAction: TextInputAction.next,
-                          validator: (val) => val!.isEmpty || (val.length < 3)
-                              ? "Your name must be longer than 3 letters."
-                              : null,
-                          onFieldSubmitted: (v) {
-                            FocusScope.of(context).requestFocus(focus);
-                          },
+        title: const Text(
+          'Registrations ',
+          style: TextStyle(
+            fontSize: 20.0,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+            fontFamily: 'Lumanosimo',
+          ),
+        ),
+        centerTitle: true,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => MainScreen(user: widget.user),
+              ),
+            );
+          },
+        ),
+      ),
+      body: Center(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Image.asset(
+                'assets/images/myguardian.png',
+                width: screenWidth,
+                fit: BoxFit.contain,
+              ),
+              Card(
+                elevation: 8,
+                margin: const EdgeInsets.all(16),
+                child: Container(
+                  padding: const EdgeInsets.all(16),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        TextFormField(
                           controller: _nameEditingController,
                           keyboardType: TextInputType.text,
+                          validator: (val) => val!.isEmpty || (val.length < 3)
+                              ? "Name must be longer than 3"
+                              : null,
                           decoration: const InputDecoration(
-                              labelText: 'Name',
-                              labelStyle: TextStyle(),
-                              icon: Icon(Icons.person),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(width: 2.0),
-                              ))),
-                      TextFormField(
-                          textInputAction: TextInputAction.next,
+                            labelText: 'Name',
+                            labelStyle: TextStyle(
+                              fontSize: 18, // Change font size
+                              fontWeight:
+                                  FontWeight.bold, // Apply bold font weight
+                            ),
+                            icon: Icon(
+                              Icons.person,
+                              // color: Colors.blue, // Change icon color
+                            ),
+                          ),
+                        ),
+
+                        TextFormField(
+                          controller: _emailEditingController,
+                          keyboardType: TextInputType.emailAddress,
                           validator: (val) => val!.isEmpty ||
                                   !val.contains("@") ||
                                   !val.contains(".")
-                              ? "Enter a valid email."
+                              ? "Enter a valid email"
                               : null,
-                          focusNode: focus,
-                          onFieldSubmitted: (v) {
-                            FocusScope.of(context).requestFocus(focus1);
-                          },
-                          controller: _emailditingController,
-                          keyboardType: TextInputType.emailAddress,
                           decoration: const InputDecoration(
-                              labelStyle: TextStyle(),
-                              labelText: 'Email',
-                              icon: Icon(Icons.email),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(width: 2.0),
-                              ))),
-                      TextFormField(
-                        textInputAction: TextInputAction.done,
-                        validator: (val) => validatePassword(val.toString()),
-                        focusNode: focus1,
-                        onFieldSubmitted: (v) {
-                          FocusScope.of(context).requestFocus(focus2);
-                        },
-                        controller: _passEditingController,
-                        decoration: InputDecoration(
-                            labelStyle: const TextStyle(),
-                            labelText: 'Password',
-                            icon: const Icon(Icons.lock),
-                            suffixIcon: IconButton(
-                              icon: Icon(
-                                _passwordVisible
-                                    ? Icons.visibility
-                                    : Icons.visibility_off,
-                              ),
-                              onPressed: () {
-                                setState(() {
-                                  _passwordVisible = !_passwordVisible;
-                                });
-                              },
+                            labelText: 'Email',
+                            labelStyle: TextStyle(
+                              fontSize: 18, // Change font size
+                              fontWeight:
+                                  FontWeight.bold, // Apply bold font weight
                             ),
-                            focusedBorder: const OutlineInputBorder(
-                              borderSide: BorderSide(width: 2.0),
-                            )),
-                        obscureText: _passwordVisible,
-                      ),
-                      TextFormField(
-                        style: const TextStyle(),
-                        textInputAction: TextInputAction.done,
-                        validator: (val) {
-                          validatePassword(val.toString());
-                          if (val != _passEditingController.text) {
-                            return "Password do not match!";
-                          } else {
-                            return null;
-                          }
-                        },
-                        focusNode: focus2,
-                        onFieldSubmitted: (v) {
-                          FocusScope.of(context).requestFocus(focus3);
-                        },
-                        controller: _pass2EditingController,
-                        decoration: InputDecoration(
-                            labelText: 'Re-type Password',
-                            labelStyle: const TextStyle(),
-                            icon: const Icon(Icons.lock),
-                            suffixIcon: IconButton(
-                              icon: Icon(
-                                _passwordVisible
-                                    ? Icons.visibility
-                                    : Icons.visibility_off,
-                              ),
-                              onPressed: () {
-                                setState(() {
-                                  _passwordVisible = !_passwordVisible;
-                                });
-                              },
+                            icon: Icon(
+                              Icons.email,
+                              // color: Colors.blue, // Change icon color
                             ),
-                            focusedBorder: const OutlineInputBorder(
-                              borderSide: BorderSide(width: 2.0),
-                            )),
-                        obscureText: _passwordVisible,
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Checkbox(
-                            value: _isChecked,
-                            onChanged: (bool? value) {
-                              setState(() {
-                                _isChecked = value!;
-                              });
-                            },
                           ),
-                          Flexible(
-                            child: GestureDetector(
-                              onTap: _showEULA,
-                              child: const Text('Agree with terms.',
+                        ),
+                        TextFormField(
+                          controller: _phoneEditingController,
+                          validator: (val) => val!.isEmpty || (val.length < 10)
+                              ? "Please enter a valid phone number"
+                              : null,
+                          keyboardType: TextInputType.phone,
+                          decoration: const InputDecoration(
+                            labelText: 'Phone',
+                            labelStyle: TextStyle(
+                              fontSize: 18, // Change font size
+                              fontWeight:
+                                  FontWeight.bold, // Apply bold font weight
+                            ),
+                            icon: Icon(
+                              Icons.phone,
+                              // color: Colors.blue, // Change icon color
+                            ),
+                          ),
+                        ),
+                        TextFormField(
+                          controller: _passEditingController,
+                          keyboardType: TextInputType.visiblePassword,
+                          validator: (val) => validatePassword(val.toString()),
+                          obscureText: !_passwordVisible,
+                          decoration: InputDecoration(
+                            labelText: 'Password',
+                            labelStyle: const TextStyle(
+                              fontSize: 18, // Change font size
+                              fontWeight:
+                                  FontWeight.bold, // Apply bold font weight
+                            ),
+                            icon: Icon(Icons.password),
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                _passwordVisible
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  _passwordVisible = !_passwordVisible;
+                                });
+                              },
+                            ),
+                          ),
+                        ),
+                        TextFormField(
+                          controller: _pass2EditingController,
+                          keyboardType: TextInputType.visiblePassword,
+                          obscureText: !_passwordVisible,
+                          decoration: InputDecoration(
+                            labelText: 'Re-Password',
+                            labelStyle: const TextStyle(
+                              fontSize: 18, // Change font size
+                              fontWeight:
+                                  FontWeight.bold, // Apply bold font weight
+                            ),
+                            icon: Icon(Icons.password),
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                _passwordVisible
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  _passwordVisible = !_passwordVisible;
+                                });
+                              },
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 16), // Increased spacing
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Checkbox(
+                              value: _isChecked,
+                              onChanged: (bool? value) {
+                                setState(() {
+                                  _isChecked = value!;
+                                });
+                              },
+                            ),
+                            Flexible(
+                              child: GestureDetector(
+                                onTap: showEula,
+                                child: const Text(
+                                  'Agree with terms',
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
-                                  )),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            MaterialButton(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(5.0),
+                              ),
+                              minWidth: 150, // Increased button width
+                              height: 50,
+                              elevation: 10,
+                              onPressed: _registerAccountDialog,
+                              color: Theme.of(context).colorScheme.primary,
+                              child: const Text('Register'),
+                            ),
+                          ],
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    LoginPage(user: widget.user),
+                              ),
+                            );
+                          },
+                          child: const Text(
+                            "Already have an account? Login",
+                            style: TextStyle(
+                              color: Colors.blue,
                             ),
                           ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(
-              height: 30,
-            ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                  fixedSize: Size(screenWidth / 1.5, 50)),
-              onPressed: _registerAccountDialog,
-              child: const Text(
-                'Register',
-              ),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                const Text(
-                  "Already Register? ",
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 14.0,
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () => {
-                    Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (BuildContext context) => LoginPage(
-                                  user: widget.user,
-                                )))
-                  },
-                  child: const Text(
-                    "Login here",
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.bold,
+                        ),
+                      ],
                     ),
                   ),
                 ),
-              ],
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            GestureDetector(
-              onTap: () => {
-                Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                        builder: (BuildContext context) => MainScreen(
-                                user: User(
-                              id: "id",
-                              name: "name",
-                              email: "email",
-                              phone: "phone",
-                              address: "address",
-                              regdate: "regdate",
-                            ))))
-              },
-              child: Container(
-                padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    border: Border.all(color: Colors.white),
-                    borderRadius: BorderRadius.circular(5)),
-                child: const Text(
-                  "Go to home page",
-                  style: TextStyle(
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
 
+  String? validatePassword(String value) {
+    String pattern = r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{6,}$';
+    RegExp regex = RegExp(pattern);
+    if (value.isEmpty) {
+      return 'Please enter a password';
+    } else {
+      if (!regex.hasMatch(value)) {
+        return 'Enter a valid password';
+      } else {
+        return null;
+      }
+    }
+  }
+
   void _registerAccountDialog() {
+    String name = _nameEditingController.text;
+    String email = _emailEditingController.text;
+    String phone = _phoneEditingController.text;
+    String passa = _passEditingController.text;
+    String passb = _pass2EditingController.text;
+
     if (!_formKey.currentState!.validate()) {
       Fluttertoast.showToast(
-          msg: "Please complete the registration form first.",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 1,
-          fontSize: 14.0);
+        msg: "Please complete the registration form first",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        fontSize: 14.0,
+      );
+      return;
+    }
+    if (!_isChecked) {
+      Fluttertoast.showToast(
+        msg: "Please Accept Terms",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        fontSize: 14.0,
+      );
+      return;
+    }
+    if (passa != passb) {
+      Fluttertoast.showToast(
+        msg: "Please check your password",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        fontSize: 14.0,
+      );
       return;
     }
 
@@ -320,17 +329,14 @@ class _RegisterPageState extends State<RegistrationScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(20.0))),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(20.0)),
+          ),
           title: const Text(
             "Register new account?",
-            textAlign: TextAlign.center,
             style: TextStyle(),
           ),
-          content: const Text(
-            "Are you sure?",
-            textAlign: TextAlign.center,
-          ),
+          content: const Text("Are you sure?", style: TextStyle()),
           actions: <Widget>[
             TextButton(
               child: const Text(
@@ -339,7 +345,7 @@ class _RegisterPageState extends State<RegistrationScreen> {
               ),
               onPressed: () {
                 Navigator.of(context).pop();
-                _registerUserAccount();
+                _registerUser(name, email, phone, passa);
               },
             ),
             TextButton(
@@ -357,91 +363,94 @@ class _RegisterPageState extends State<RegistrationScreen> {
     );
   }
 
-  String? validatePassword(String value) {
-    String pattern = r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{6,}$';
-    RegExp regex = RegExp(pattern);
-    if (value.isEmpty) {
-      return 'Please enter password.';
-    } else {
-      if (!regex.hasMatch(value)) {
-        return 'Enter valid password.';
-      } else {
-        return null;
-      }
-    }
+  loadEula() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    eula = await rootBundle.loadString('assets/images/eula.txt');
   }
 
-  void _showEULA() {
-    loadEula();
+  showEula() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text(
             "EULA",
+            style: TextStyle(),
           ),
           content: SizedBox(
-            height: screenHeight / 1.5,
+            height: 300,
             child: Column(
               children: <Widget>[
                 Expanded(
                   flex: 1,
                   child: SingleChildScrollView(
-                      child: RichText(
-                    softWrap: true,
-                    textAlign: TextAlign.justify,
-                    text: TextSpan(
+                    child: RichText(
+                      softWrap: true,
+                      textAlign: TextAlign.justify,
+                      text: TextSpan(
                         style: const TextStyle(
-                          fontSize: 12.0,
                           color: Colors.black,
+                          fontSize: 12.0,
                         ),
-                        text: eula),
-                  )),
+                        text: eula,
+                      ),
+                    ),
+                  ),
                 ),
               ],
             ),
           ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text("Close"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
         );
       },
     );
   }
 
-  loadEula() async {
-    eula = await rootBundle.loadString('assets/eula.txt');
-  }
-
-  void _registerUserAccount() {
-    FocusScope.of(context).requestFocus(FocusNode());
-    String _name = _nameEditingController.text;
-    String _email = _emailditingController.text;
-    String _pass = _passEditingController.text;
-
-    http.post(Uri.parse("${Config.SERVER}homeStayRaya/php/register_user.php"),
-        body: {
-          "name": _name,
-          "email": _email,
-          "password": _pass,
-          "register": "register"
-        }).then((response) {
-      var data = jsonDecode(response.body);
-      if (response.statusCode == 200 && data['status'] == "success") {
-        Fluttertoast.showToast(
-            msg: "success",
+  void _registerUser(String name, String email, String phone, String pass) {
+    try {
+      http.post(Uri.parse("${Config.SERVER}/php/register_user.php"), body: {
+        "name": name,
+        "email": email,
+        "phone": phone,
+        "password": pass,
+        "register": "register",
+      }).then((response) {
+        var data = jsonDecode(response.body);
+        if (response.statusCode == 200 && data['status'] == "success") {
+          Fluttertoast.showToast(
+            msg: "Success. Please check your email for verification",
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            fontSize: 14.0,
+          );
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => LoginPage(user: widget.user),
+            ),
+          );
+          return;
+        } else {
+          Fluttertoast.showToast(
+            msg: "Failed",
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
             timeInSecForIosWeb: 1,
-            fontSize: 14.0);
-        return;
-      } else {
-        Fluttertoast.showToast(
-            msg: "Registration Failed",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.BOTTOM,
-            timeInSecForIosWeb: 1,
-            fontSize: 14.0);
-
-        return;
-      }
-    });
+            fontSize: 14.0,
+          );
+          return;
+        }
+      });
+    } catch (e) {
+      print(e);
+    }
   }
 }

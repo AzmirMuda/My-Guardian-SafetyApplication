@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:homestay_raya1/views/profilescreen.dart';
-import 'package:homestay_raya1/views/registrationscreen.dart';
-import 'package:homestay_raya1/views/updatescree.dart';
+
 import '../models/user.dart';
+import 'loginscreen.dart';
+import 'registrationscreen.dart';
 
 class MainScreen extends StatefulWidget {
   final User user;
-  const MainScreen({super.key, required this.user});
+  const MainScreen({Key? key, required this.user}) : super(key: key);
 
   @override
   State<MainScreen> createState() => _MainScreenState();
@@ -16,128 +16,146 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-            body: Center(
-        child:
-            Column(mainAxisAlignment: MainAxisAlignment.start, children: [
-               const Text(
-            "",
-            style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold,fontStyle: FontStyle.italic,color: Color.fromARGB(255, 227, 89, 4)),
+      appBar: AppBar(
+        automaticallyImplyLeading: false, // Remove back button
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.orange, Colors.blueAccent],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
           ),
-          Image.asset('assets/images/home1.png', scale: 0.2,color:const Color.fromARGB(255, 0, 0, 0),),
-        ]),
-      ),
-        appBar: AppBar(
-          title: const Text('Home',style: TextStyle(fontStyle: FontStyle.normal,fontWeight: FontWeight.bold)),
         ),
-        drawer: Drawer(
-          child: ListView(
-            children: [
-              UserAccountsDrawerHeader(
-                decoration: const BoxDecoration(
-                    color: Color.fromARGB(255, 255, 149, 0)),
-                accountEmail: Text(widget.user.email.toString(),
-                    style: const TextStyle(
-                        color: Color.fromARGB(255, 0, 0,
-                            0))), // keep blank text because email is required
-                accountName: Row(
-                  children: <Widget>[
-                    Container(
-                      width: 50,
-                      height: 150,
-                      decoration: const BoxDecoration(shape: BoxShape.circle),
-                      child: const CircleAvatar(
-                        backgroundColor: Color.fromARGB(255, 240, 236, 92),
-                        child: Icon(
-                          Icons.check,
+        title: const Text(
+          '',
+          style: TextStyle(
+            fontSize: 20.0,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+            fontFamily: 'Lumanosimo',
+          ),
+        ),
+        centerTitle: true,
+      ),
+      backgroundColor: Colors.white,
+      body: Container(
+        child: Padding(
+          padding: const EdgeInsets.only(top: 50),
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text(
+                  'Welcome to Safety Application',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Lumanosimo',
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                Container(
+                  width: 800,
+                  height: 200,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.rectangle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5),
+                        spreadRadius: 2,
+                        blurRadius: 5,
+                        offset: Offset(0, 5),
+                      ),
+                    ],
+                  ),
+                  child: Image.asset(
+                    'assets/images/panic2.jpg',
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                const SizedBox(height: 150),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => LoginPage(
+                          user: widget.user,
                         ),
                       ),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.orange,
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
                     ),
-                        
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text(
-                          widget.user.name.toString(),
-                          style: const TextStyle(
-                              color: Color.fromARGB(255, 0, 0, 0)),
-                        ),
-                        
-                        Text(
-                          widget.user.phone.toString(),
-                          style: const TextStyle(
-                              color: Color.fromARGB(255, 0, 0, 0)),
-                        ),
-                      ],
+                  ),
+                  child: const Text(
+                    "Login",
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
                     ),
-                  ],
+                  ),
                 ),
-              ),
-              ListTile(
-                 title: const Text('Home',style: TextStyle(fontStyle: FontStyle.normal,fontWeight: FontWeight.bold)),
-                onTap: () {
-                  Navigator.pop(context);
-                  Navigator.push(
+                const Text(
+                  'Please login to access the application.',
+                  style: TextStyle(
+                    fontSize: 15,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 10),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    Navigator.push(
                       context,
                       MaterialPageRoute(
-                          // ignore: prefer_const_constructors
-                          builder: (content) => MainScreen(
-                              user: User(
-                                  id: "id",
-                                  name: "name",
-                                  email: "email",
-                                  phone: "phone",
-                                  address: "address",
-                                  regdate: "regdate"))));
-                },
-              ),
-              ListTile(
-                 title: const Text('Create new account',style: TextStyle(fontStyle: FontStyle.normal,fontWeight: FontWeight.bold)),
-                onTap: () {
-                  Navigator.pop(context);
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (content) => RegistrationScreen(
-                                user: widget.user,
-                              )));
-                },
-              ),
-              ListTile(
-                title: const Text('Homestay List',style: TextStyle(fontStyle: FontStyle.normal,fontWeight: FontWeight.bold)),
-                onTap: () {
-                  Navigator.pop(context);
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (content) => ProfileScreen(
-                              user: User(
-                                  id: "id",
-                                  name: "name",
-                                  email: "email",
-                                  phone: "phone",
-                                  address: "address",
-                                  regdate: "regdate"))));
-                },
-              ),
-              ListTile(
-                title: const Text('Update profile',style: TextStyle(fontStyle: FontStyle.normal,fontWeight: FontWeight.bold)),
-                onTap: () {
-                  Navigator.pop(context);
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (content) => UpdateScreen(
-                              user: User(
-                                  id: "id",
-                                  name: "name",
-                                  email: "email",
-                                  phone: "phone",
-                                  address: "address",
-                                  regdate: "regdate"))));
-                },
-              ),
-            ],
+                        builder: (context) => RegistrationScreen(
+                          user: widget.user,
+                        ),
+                      ),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.blue,
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  child: const Text(
+                    "Registration",
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+                const Text(
+                  'Please register to access the application features.',
+                  style: TextStyle(
+                    fontSize: 15,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
           ),
-        ));
+        ),
+      ),
+    );
   }
 }

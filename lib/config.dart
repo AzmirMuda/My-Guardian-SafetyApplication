@@ -1,3 +1,3 @@
 class Config{
-static const String SERVER = "http://10.19.64.129/";
+static const String SERVER = "http://192.168.1.13/Myguardian/homestay_raya1";
 }

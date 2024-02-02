@@ -1,8 +1,8 @@
 <?php
 if (!isset($_POST['register'])){
-	$response = array('status' => 'failed','data' => null);
+	$response = array('status' => 'fail','data' => null);
 	sendJsonResponse($response);
-	die();	
+	die();
 }
 include_once("dbconnect.php");
 
@@ -14,24 +14,24 @@ $address = "na";
 $sqlregister = "INSERT INTO `tbl_user`(`user_email`, `user_name`, `user_phone`, `user_address`, `user_otp`, `user_password`) 
 VALUES ('$email','$name','$phone','$address','$otp','$password')";
 
-try { 
+try {
 if ($conn->query($sqlregister) === TRUE) {
 $response = array('status' => 'success', 'data' => null);
 sendJsonResponse($response);
 }else{
-$response = array('status' => 'failed', 'data' => null);
+$response = array('status' => 'faile', 'data' => null);
 sendJsonResponse($response);
 }
 }
 catch (Exception $e){
-$response = array('status' => 'failed', 'data' => null);
+$response = array('status' => 'fai', 'data' => null);
 sendJsonResponse($response);
 }
 $conn->close();
 
 function sendJsonResponse($sentArray)
 {
-	header('content-Type: application/json');
+	header('Content-Type: application/json');
 	echo json_encode($sentArray);
 }
 

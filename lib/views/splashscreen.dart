@@ -39,11 +39,19 @@ class _SplashScreenState extends State<SplashScreen> {
       body: Center(
         child:
             Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-               const Text(
+          const Text(
             "",
-            style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold,fontStyle: FontStyle.italic,color: Color.fromARGB(255, 227, 89, 4)),
+            style: TextStyle(
+                fontSize: 35,
+                fontWeight: FontWeight.bold,
+                fontStyle: FontStyle.italic,
+                color: Color.fromARGB(255, 227, 89, 4)),
           ),
-          Image.asset('assets/images/home1.png', scale: 0.2,color:const Color.fromARGB(255, 254, 154, 3),),
+          Image.asset(
+            'assets/images/myguardian.png',
+            scale: 0.1,
+            //color: const Color.fromARGB(255, 254, 154, 3),
+          ),
           const CircularProgressIndicator(),
           const Text("version 0.1b"),
         ]),
